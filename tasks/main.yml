@@ -1,12 +1,12 @@
 ---
 - name: (Debian) dependent packages
   when: ansible_os_family == 'Debian'
-  apt: name={{item}} state=latest
+  apt: name={{item}} state=present
   with_items:
     - nfs-common
 
 - name: (RedHat) dependent packages
   when: ansible_os_family == 'RedHat'
-  yum: name={{item}} state=latest
+  package: name={{item}} state=preset
   with_items:
     - nfs-utils
