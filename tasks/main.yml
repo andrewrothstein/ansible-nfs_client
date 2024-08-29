@@ -1,13 +1,17 @@
 ---
-- name: resolve platform specific vars
-  include_vars: "{{item}}"
+- name: Resolve platform specific vars
+  ansible.builtin.include_vars: '{{ item }}'
   with_first_found:
-    - "{{ansible_distribution}}-{{ansible_distribution_release}}.yml"
-    - "{{ansible_distribution}}.yml"
-    - "{{ansible_os_family}}.yml"
-
-- name: installing pkgs...
-  become: yes
+    - files:
+        - '{{ ansible_distribution }}-{{ ansible_distribution_release }}.yml'
+        - '{{ ansible_distribution }}.yml'
+        - '{{ ansible_os_family }}.yml'
+      skip: true
+      paths:
+        - '{{ role_path }}/vars'
+- name: Installing OS pkgs...
+  become: true
   become_user: root
-  package: name={{item}} state=present
-  with_items: '{{nfs_client_pkgs}}'
+  ansible.builtin.package:
+    name: '{{ nfs_client_pkgs }}'
+    state: present
